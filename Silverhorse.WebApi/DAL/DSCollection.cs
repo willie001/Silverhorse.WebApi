@@ -26,20 +26,26 @@ namespace Silverhorse.WebApi.DAL
             string responseUsers = await response.Content.ReadAsStringAsync();
             List<Album> objectListUsers = JsonConvert.DeserializeObject<List<Album>>(responseUsers);
 
-            //List<Object> collection = new List<object>();
+            List<Object> collection = new List<object>();
 
-            Dictionary<string, object> collection = new Dictionary<string, object>();
-
+            List<Post> posts = new List<Post>();
+            List<Album> albums = new List<Album>(); 
+            List<Album> users = new List<Album>();
+                        
             Random p = new Random();
             Random a = new Random();
             Random c = new Random();
 
-            for (var i = 0; i < 30; i += 1)
+            for (var i = 0; i < 10; i += 1)
             {
-                collection.Add("posts", objectListPosts[p.Next(0, 100)]);
-                collection.Add("albums", objectListAlbums[p.Next(0, 100)]);
-                collection.Add("users", objectListUsers[p.Next(0, 10)]);
+                posts.Add(objectListPosts[p.Next(0, 100)]);
+                albums.Add(objectListAlbums[a.Next(0, 100)]);
+                users.Add(objectListUsers[c.Next(0, 10)]);
             }
+
+            collection.Add(posts);
+            collection.Add(albums);
+            collection.Add(users);
 
             string serialData = JsonConvert.SerializeObject(collection, Formatting.Indented);
 
