@@ -28,9 +28,9 @@ namespace Silverhorse.WebApi.DAL
 
             List<Object> collection = new List<object>();
 
-            List<Post> posts = new List<Post>();
-            List<Album> albums = new List<Album>(); 
-            List<Album> users = new List<Album>();
+            List<object> posts = new List<object>();
+            List<object> albums = new List<object>(); 
+            List<object> users = new List<object>();
                         
             Random p = new Random();
             Random a = new Random();
@@ -47,7 +47,13 @@ namespace Silverhorse.WebApi.DAL
             collection.Add(albums);
             collection.Add(users);
 
-            string serialData = JsonConvert.SerializeObject(collection, Formatting.Indented);
+            Dictionary<string, List<object>> result = new Dictionary<string, List<object>>();
+
+            result.Add("post", posts);
+            result.Add("album", albums);
+            result.Add("user", users);
+
+            string serialData = JsonConvert.SerializeObject(result);
 
             return serialData;
         }

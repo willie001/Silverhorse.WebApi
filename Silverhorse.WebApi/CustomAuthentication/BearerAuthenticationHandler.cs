@@ -22,9 +22,7 @@ namespace Silverhorse.WebApi.CustomAuthentication
             if (authHeader != null && authHeader.StartsWith("bearer", StringComparison.OrdinalIgnoreCase))
             {
                 var token = authHeader.Substring("Bearer ".Length).Trim();
-                //System.Console.WriteLine(token);
-                //var credentialstring = Encoding.UTF8.GetString(Convert.FromBase64String(token));
-                //var credentials = credentialstring.Split(':');
+                
                 if (token == "af24353tdsfw")
                 {
                     var claims = new[] { new Claim("name", token), new Claim(ClaimTypes.Role, "Admin") };
@@ -33,13 +31,13 @@ namespace Silverhorse.WebApi.CustomAuthentication
                     return Task.FromResult(AuthenticateResult.Success(new AuthenticationTicket(claimsPrincipal, Scheme.Name)));
                 }
 
-                Response.StatusCode = 501;
+                Response.StatusCode = StatusCodes.Status501NotImplemented;
                 Response.Headers.Add("WWW-Authenticate", "Bearer Silverhorse");
                 return Task.FromResult(AuthenticateResult.Fail("Invalid Authorization Header"));
             }
             else
             {
-                Response.StatusCode = 501;
+                Response.StatusCode = StatusCodes.Status501NotImplemented;
                 Response.Headers.Add("WWW-Authenticate", "Bearer Silverhorse");
                 return Task.FromResult(AuthenticateResult.Fail("Invalid Authorization Header"));
             }
