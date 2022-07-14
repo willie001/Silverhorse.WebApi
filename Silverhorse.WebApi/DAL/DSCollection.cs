@@ -5,7 +5,7 @@ namespace Silverhorse.WebApi.DAL
 {
     public static class DSCollection
     {
-        public static async Task<List<Object>> CollectionsAsync()
+        public static async Task<string> CollectionsAsync()
         {
             //Get posts
             HttpClient client = new HttpClient();
@@ -26,7 +26,9 @@ namespace Silverhorse.WebApi.DAL
             string responseUsers = await response.Content.ReadAsStringAsync();
             List<Album> objectListUsers = JsonConvert.DeserializeObject<List<Album>>(responseUsers);
 
-            List<Object> collection = new List<object>();
+            //List<Object> collection = new List<object>();
+
+            Dictionary<string, object> collection = new Dictionary<string, object>();
 
             Random p = new Random();
             Random a = new Random();
@@ -34,12 +36,14 @@ namespace Silverhorse.WebApi.DAL
 
             for (var i = 0; i < 30; i += 1)
             {
-                collection.Add(objectListPosts[p.Next(0, 100)]);
-                collection.Add(objectListAlbums[p.Next(0, 100)]);
-                collection.Add(objectListUsers[p.Next(0, 10)]);
+                collection.Add("posts", objectListPosts[p.Next(0, 100)]);
+                collection.Add("albums", objectListAlbums[p.Next(0, 100)]);
+                collection.Add("users", objectListUsers[p.Next(0, 10)]);
             }
 
-            return collection;
+            string serialData = JsonConvert.SerializeObject(collection, Formatting.Indented);
+
+            return serialData;
         }
     }
 }
