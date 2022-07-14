@@ -5,8 +5,7 @@ namespace Silverhorse.WebApi.DAL
 {
     public static class DSCollection
     {
-
-        public static IConfiguration StaticConfig { get; private set; }
+                
         public static async Task<Dictionary<string, List<object>>> CollectionsAsync()
         {                 
             //Get posts
@@ -49,7 +48,7 @@ namespace Silverhorse.WebApi.DAL
 
         public static async Task<string> HttpResponse(string endPoint)
         {
-            string baseUrl = "https://jsonplaceholder.typicode.com/"
+            string baseUrl = "https://jsonplaceholder.typicode.com/";
             HttpClient client = new HttpClient();
             HttpResponseMessage response = await client.GetAsync(baseUrl + endPoint);
             response.EnsureSuccessStatusCode();
