@@ -5,28 +5,21 @@ namespace Silverhorse.WebApi.DAL
 {
     public static class DSCollection
     {
-        public static async Task<string> CollectionsAsync()
-        {
+
+        public static IConfiguration StaticConfig { get; private set; }
+        public static async Task<Dictionary<string, List<object>>> CollectionsAsync()
+        {                 
             //Get posts
-            HttpClient client = new HttpClient();
-            HttpResponseMessage response = await client.GetAsync("https://jsonplaceholder.typicode.com/posts");
-            response.EnsureSuccessStatusCode();
-            string responsePosts = await response.Content.ReadAsStringAsync();
+            string responsePosts = await HttpResponse("posts");
             List<Post> objectListPosts = JsonConvert.DeserializeObject<List<Post>>(responsePosts);
 
-            //Get albums
-            response = await client.GetAsync("https://jsonplaceholder.typicode.com/albums");
-            response.EnsureSuccessStatusCode();
-            string responseAlbums = await response.Content.ReadAsStringAsync();
+            //Get albums           
+            string responseAlbums = await HttpResponse("albums");
             List<Album> objectListAlbums = JsonConvert.DeserializeObject<List<Album>>(responseAlbums);
 
-            //Get users
-            response = await client.GetAsync("https://jsonplaceholder.typicode.com/users");
-            response.EnsureSuccessStatusCode();
-            string responseUsers = await response.Content.ReadAsStringAsync();
-            List<Album> objectListUsers = JsonConvert.DeserializeObject<List<Album>>(responseUsers);
-
-            List<Object> collection = new List<object>();
+            //Get users            
+            string responseUsers = await HttpResponse("users");
+            List<Album> objectListUsers = JsonConvert.DeserializeObject<List<Album>>(responseUsers);            
 
             List<object> posts = new List<object>();
             List<object> albums = new List<object>(); 
@@ -41,11 +34,7 @@ namespace Silverhorse.WebApi.DAL
                 posts.Add(objectListPosts[p.Next(0, 100)]);
                 albums.Add(objectListAlbums[a.Next(0, 100)]);
                 users.Add(objectListUsers[c.Next(0, 10)]);
-            }
-
-            collection.Add(posts);
-            collection.Add(albums);
-            collection.Add(users);
+            }            
 
             Dictionary<string, List<object>> result = new Dictionary<string, List<object>>();
 
@@ -55,7 +44,17 @@ namespace Silverhorse.WebApi.DAL
 
             string serialData = JsonConvert.SerializeObject(result);
 
-            return serialData;
+            return result;
+        }
+
+        public static async Task<string> HttpResponse(string endPoint)
+        {
+            string baseUrl = "https://jsonplaceholder.typicode.com/"
+            HttpClient client = new HttpClient();
+            HttpResponseMessage response = await client.GetAsync(baseUrl + endPoint);
+            response.EnsureSuccessStatusCode();
+
+            return await response.Content.ReadAsStringAsync();
         }
     }
 }

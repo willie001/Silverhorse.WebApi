@@ -7,13 +7,16 @@ namespace Silverhorse.WebApi.CustomAuthentication
 {
     public class BearerAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>
     {
+        private readonly IConfiguration _config;
         public BearerAuthenticationHandler(
             IOptionsMonitor<AuthenticationSchemeOptions> options,
             ILoggerFactory logger,
             UrlEncoder encoder,
-            ISystemClock clock
+            ISystemClock clock,
+            IConfiguration config
             ) : base(options, logger, encoder, clock)
         {
+            _config = config;
         }
 
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
@@ -21,9 +24,10 @@ namespace Silverhorse.WebApi.CustomAuthentication
             var authHeader = Request.Headers["Authorization"].ToString();
             if (authHeader != null && authHeader.StartsWith("bearer", StringComparison.OrdinalIgnoreCase))
             {
+                var baseToken = _config.GetValue<string>("Token");
                 var token = authHeader.Substring("Bearer ".Length).Trim();
                 
-                if (token == "af24353tdsfw")
+                if (token == baseToken)
                 {
                     var claims = new[] { new Claim("name", token), new Claim(ClaimTypes.Role, "Admin") };
                     var identity = new ClaimsIdentity(claims, "Bearer");
