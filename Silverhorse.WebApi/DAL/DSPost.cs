@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Silverhorse.WebApi.Helpers;
 using Silverhorse.WebApi.Models;
 using System.Text;
 
@@ -7,64 +8,43 @@ namespace Silverhorse.WebApi.DAL
     public static class DSPost
     {
         public static async Task<List<Post>> AllPostsAsync()
-        {
-
-            HttpClient client = new HttpClient();
-            HttpResponseMessage response = await client.GetAsync("https://jsonplaceholder.typicode.com/posts");
-            response.EnsureSuccessStatusCode();
-            string responseBody = await response.Content.ReadAsStringAsync();
-            List<Post> postList = JsonConvert.DeserializeObject<List<Post>>(responseBody);
+        {                       
+            string responseBody = await HttpClientHelper.GetHttpResponse("posts"); 
+            List<Post>? postList = JsonConvert.DeserializeObject<List<Post>>(responseBody);
 
             return postList;
         }
 
         public static async Task<Post> GetPostAsync(int id)
-        {
-            HttpClient client = new HttpClient();
-            HttpResponseMessage response = await client.GetAsync("https://jsonplaceholder.typicode.com/posts/" + id.ToString());
-            response.EnsureSuccessStatusCode();
-            string responseBody = await response.Content.ReadAsStringAsync();
+        {           
+            string responseBody = await HttpClientHelper.GetHttpResponse("posts", id);
             var obj = JsonConvert.DeserializeObject<Post>(responseBody);
 
             return obj;
         }
 
         public static async Task<Post> AddPostAsync(Post post)
-        {
-            HttpContent httpContent = new StringContent(JsonConvert.SerializeObject(post), Encoding.UTF8);
-            HttpClient client = new HttpClient();
-            HttpResponseMessage response = await client.PostAsync("https://jsonplaceholder.typicode.com/posts/", httpContent);
-            response.EnsureSuccessStatusCode();
-            string responseBody = await response.Content.ReadAsStringAsync();
+        {            
+            string responseBody = await HttpClientHelper.PostHttpResponse("posts", post);
             var obj = JsonConvert.DeserializeObject<Post>(responseBody);
 
             return obj;
-
         }
 
         public static async Task<Post> UpdatePostAsync(Post post, int id)
-        {
-            HttpContent httpContent = new StringContent(JsonConvert.SerializeObject(post), Encoding.UTF8);
-            HttpClient client = new HttpClient();
-            HttpResponseMessage response = await client.PutAsync("https://jsonplaceholder.typicode.com/posts/" + id.ToString(), httpContent);
-            response.EnsureSuccessStatusCode();
-            string responseBody = await response.Content.ReadAsStringAsync();
+        {            
+            string responseBody = await HttpClientHelper.PutHttpResponse("posts", post, id);
             var obj = JsonConvert.DeserializeObject<Post>(responseBody);
 
             return obj;
-
         }
 
-        public static async Task<Post> UpdatePostAsync(int id)
-        {
-            HttpClient client = new HttpClient();
-            HttpResponseMessage response = await client.DeleteAsync("https://jsonplaceholder.typicode.com/posts/" + id.ToString());
-            response.EnsureSuccessStatusCode();
-            string responseBody = await response.Content.ReadAsStringAsync();
+        public static async Task<Post> DeletePostAsync(int id)
+        {            
+            string responseBody = await HttpClientHelper.DeleteHttpResponse("posts", id);
             var obj = JsonConvert.DeserializeObject<Post>(responseBody);
 
             return obj;
-
         }
     }
 }

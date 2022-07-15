@@ -24,8 +24,8 @@ namespace Silverhorse.WebApi.Controllers
                 return Ok(allPosts);
             }
             catch (Exception ex)
-            {                
-                return StatusCode(500, ex.Message.ToString());
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Internal server error");
             }
         }
 
@@ -42,7 +42,7 @@ namespace Silverhorse.WebApi.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message.ToString());
+                return StatusCode(StatusCodes.Status500InternalServerError, "Internal server error");
             }
         }
 
@@ -64,8 +64,8 @@ namespace Silverhorse.WebApi.Controllers
 
             }
             catch (Exception ex)
-            {                
-                return StatusCode(500, ex.Message.ToString());
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Internal server error");
             }
         }
 
@@ -88,15 +88,25 @@ namespace Silverhorse.WebApi.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message.ToString());
+                return StatusCode(StatusCodes.Status500InternalServerError, "Internal server error");
             }
         }
 
         // DELETE api/<PostsController>/5
         [HttpDelete("{id}")]
         [Authorize]
-        public void Delete(int id)
+        public async Task<IActionResult> DeletePost(int id)
         {
+            try
+            {
+                var newPost = await DSPost.DeletePostAsync(id);
+                return StatusCode(StatusCodes.Status200OK, "Delete successful");
+
+            }
+            catch (Exception ex)
+            {                
+                return StatusCode(StatusCodes.Status500InternalServerError, "Internal server error");
+            }
         }
     }
 }

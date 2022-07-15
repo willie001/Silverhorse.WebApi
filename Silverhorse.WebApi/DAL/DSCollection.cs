@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Silverhorse.WebApi.Helpers;
 using Silverhorse.WebApi.Models;
 
 namespace Silverhorse.WebApi.DAL
@@ -9,15 +10,15 @@ namespace Silverhorse.WebApi.DAL
         public static async Task<Dictionary<string, List<object>>> CollectionsAsync()
         {                 
             //Get posts
-            string responsePosts = await HttpResponse("posts");
+            string responsePosts = await HttpClientHelper.GetHttpResponse("posts");
             List<Post> objectListPosts = JsonConvert.DeserializeObject<List<Post>>(responsePosts);
 
             //Get albums           
-            string responseAlbums = await HttpResponse("albums");
+            string responseAlbums = await HttpClientHelper.GetHttpResponse("albums");
             List<Album> objectListAlbums = JsonConvert.DeserializeObject<List<Album>>(responseAlbums);
 
             //Get users            
-            string responseUsers = await HttpResponse("users");
+            string responseUsers = await HttpClientHelper.GetHttpResponse("users");
             List<Album> objectListUsers = JsonConvert.DeserializeObject<List<Album>>(responseUsers);            
 
             List<object> posts = new List<object>();
@@ -44,16 +45,6 @@ namespace Silverhorse.WebApi.DAL
             string serialData = JsonConvert.SerializeObject(result);
 
             return result;
-        }
-
-        public static async Task<string> HttpResponse(string endPoint)
-        {
-            string baseUrl = "https://jsonplaceholder.typicode.com/";
-            HttpClient client = new HttpClient();
-            HttpResponseMessage response = await client.GetAsync(baseUrl + endPoint);
-            response.EnsureSuccessStatusCode();
-
-            return await response.Content.ReadAsStringAsync();
-        }
+        }        
     }
 }
